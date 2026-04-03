@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+body {
+  transition: background-color 200ms ease, color 200ms ease, filter 200ms ease;
+}
+
+body.theme-dark {
+  background: #090b10;
+  color: #ffffff;
+}
+
+body.theme-light {
+  background: #f4f7fb;
+  color: #0f172a;
+}
+
+body.theme-light #root {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+body.theme-light img,
+body.theme-light video,
+body.theme-light picture,
+body.theme-light canvas,
+body.theme-light svg {
+  filter: invert(1) hue-rotate(180deg);
+}

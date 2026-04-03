@@ -79,6 +79,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     # "social_django.middleware.SocialAuthExceptionMiddleware", # social
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware", # CORS
     'django.middleware.common.CommonMiddleware',
@@ -293,3 +294,7 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 SSLCOMMERZ_STORE_ID = os.getenv('SSLCOMMERZ_STORE_ID')
 SSLCOMMERZ_STORE_PASS = os.getenv('SSLCOMMERZ_STORE_PASS')
+
+
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

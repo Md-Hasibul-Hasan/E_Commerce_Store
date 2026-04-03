@@ -73,6 +73,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'django_filters',
+    'cloudinary',
+    'cloudinary_storage',
 
 ]
 
@@ -295,6 +297,16 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 SSLCOMMERZ_STORE_ID = os.getenv('SSLCOMMERZ_STORE_ID')
 SSLCOMMERZ_STORE_PASS = os.getenv('SSLCOMMERZ_STORE_PASS')
 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUD_NAME'),
+    'API_KEY': os.getenv('API_KEY'),
+    'API_SECRET': os.getenv('API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

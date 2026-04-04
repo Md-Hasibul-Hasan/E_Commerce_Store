@@ -299,6 +299,9 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 FRONTEND_URL = os.getenv('FRONTEND_URL')
 
+# Backend URL for SSLCommerz callbacks
+BACKEND_URL = os.getenv('BACKEND_URL')
+
 
 # SSLCOMMERZ_STORE_ID = 'teamr600c004f8da4d'
 # SSLCOMMERZ_STORE_PASS = 'teamr600c004f8da4d@ssl'

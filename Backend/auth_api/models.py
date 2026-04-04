@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager,AbstractBaseUser,PermissionsMixin
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 
@@ -44,7 +45,8 @@ class User(AbstractBaseUser,PermissionsMixin):
     name = models.CharField(max_length=255)
     phone = models.IntegerField(null=True,blank=True)
     address = models.CharField(max_length=255,null=True,blank=True)
-    image = models.ImageField(upload_to='profile_images/',null=True,blank=True)
+    # image = models.ImageField(upload_to='profile_images/',null=True,blank=True)
+    image = CloudinaryField('profile_images',null=True,blank=True)
 
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)

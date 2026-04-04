@@ -5,6 +5,7 @@ from django.db import models, transaction
 from auth_api.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.timezone import now
+from cloudinary.models import CloudinaryField
 
 
 class Product(models.Model):
@@ -35,7 +36,8 @@ class ProductImage(models.Model):
         related_name='images',
         on_delete=models.CASCADE
     )
-    image = models.ImageField(upload_to='products/')
+    # image = models.ImageField(upload_to='products/')
+    image = CloudinaryField('product_images',null=True,blank=True)
 
     def __str__(self):
         return f"{self.product.name} Image"
@@ -122,7 +124,8 @@ class OrderItem(models.Model):
     name = models.CharField(max_length=200, null=True)
     qty = models.IntegerField(null=True)
     price = models.DecimalField(max_digits=7, decimal_places=2, null=True)
-    image = models.CharField(max_length=200, null=True, blank=True)
+    # image = models.CharField(max_length=200, null=True, blank=True)
+    image = CloudinaryField('orderitem_images',null=True,blank=True)
 
     def __str__(self):
         return str(self.product)
@@ -194,7 +197,8 @@ class ReviewImage(models.Model):
         related_name='reviewimages',
         on_delete=models.CASCADE
     )
-    image = models.ImageField(upload_to='reviews/')
+    # image = models.ImageField(upload_to='reviews/')
+    image = CloudinaryField('review_images',null=True,blank=True)
 
     def __str__(self):
         return f"{self.review.product.name} Review Image"

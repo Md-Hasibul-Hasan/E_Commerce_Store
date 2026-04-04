@@ -79,7 +79,26 @@ export const refreshToken = createAsyncThunk(
   }
 );
 
-// ✅ REGISTER
+
+// // ✅ REGISTER
+// export const registerUser = createAsyncThunk(
+//   "user/register",
+//   async ({ name, email, password, re_password }, { rejectWithValue }) => {
+//     try {
+//       const { data } = await axios.post(`${API}/auth/users/`, {
+//         name,
+//         email,
+//         password,
+//         re_password,
+//       });
+
+//       return data;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data || error.message);
+//     }
+//   }
+// );
+
 export const registerUser = createAsyncThunk(
   "user/register",
   async ({ name, email, password, re_password }, { rejectWithValue }) => {
@@ -93,6 +112,18 @@ export const registerUser = createAsyncThunk(
 
       return data;
     } catch (error) {
+      console.log("FULL ERROR:", error);
+
+      if (error.response) {
+        console.log("STATUS:", error.response.status);
+        console.log("DATA:", error.response.data);
+        console.log("HEADERS:", error.response.headers);
+      } else if (error.request) {
+        console.log("NO RESPONSE:", error.request);
+      } else {
+        console.log("ERROR MESSAGE:", error.message);
+      }
+
       return rejectWithValue(error.response?.data || error.message);
     }
   }

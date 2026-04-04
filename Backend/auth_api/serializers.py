@@ -11,12 +11,16 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
 
 
 class UserSerializer(DjoserUserSerializer):
-    # image = serializers.SerializerMethodField()
+    phone = serializers.CharField(required=False, allow_blank=True)
+    
     class Meta(DjoserUserSerializer.Meta):
         model = User
         fields = ('id', 'email', 'name', 'phone', 'address', 'image', 'is_staff', 'is_superuser')
 
-        # def get_image(self, obj):
-        #     if obj.image:
-        #         return obj.image.url
-        #     return None
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.image:
+            representation['image'] = instance.image.url
+        else:
+            representation['image'] = None
+        return representation

@@ -61,6 +61,8 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
+from djoser.views import UserViewSet as DjoserUserViewSet
+from rest_framework.parsers import MultiPartParser, FormParser
 
 User = get_user_model()
 
@@ -119,3 +121,7 @@ class GoogleLoginView(APIView):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }, status=status.HTTP_200_OK)
+
+
+class UserViewSet(DjoserUserViewSet):
+    parser_classes = [MultiPartParser, FormParser]

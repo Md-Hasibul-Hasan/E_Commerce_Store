@@ -185,7 +185,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # MEDIA_ROOT = BASE_DIR / 'mediafiles'
 
 # coudinary image url 
-MEDIA_URL = 'https://res.cloudinary.com/dkorqoeca/'
+# MEDIA_URL = 'https://res.cloudinary.com/dkorqoeca/'
 
 
 
@@ -265,6 +265,11 @@ DJOSER = {
         'user': 'auth_api.serializers.UserSerializer',
         'current_user': 'auth_api.serializers.UserSerializer',
         'user_delete': 'djoser.serializers.UserDeleteSerializer',
+    },
+
+    # -------- Viewsets --------
+    'VIEWSETS': {
+        'user': 'auth_api.views.UserViewSet',
     },
 
     # -------- Email Classes --------

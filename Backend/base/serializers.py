@@ -4,28 +4,32 @@ from auth_api.serializers import UserSerializer
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
     class Meta:
         model = ProductImage
         fields = '__all__'
 
-    def get_image(self, obj):
-        if obj.image:
-            return obj.image.url
-        return None
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.image:
+            representation['image'] = instance.image.url
+        else:
+            representation['image'] = None
+        return representation
 
 
 
 class ReviewImageSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
     class Meta:
         model = ReviewImage
         fields = ['id', 'image', 'review', ]
 
-    def get_image(self, obj):
-        if obj.image:
-            return obj.image.url
-        return None
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.image:
+            representation['image'] = instance.image.url
+        else:
+            representation['image'] = None
+        return representation
 
 
 
@@ -93,6 +97,14 @@ class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.image:
+            representation['image'] = instance.image.url
+        else:
+            representation['image'] = None
+        return representation
 
 
 # 🔹 Shipping Address

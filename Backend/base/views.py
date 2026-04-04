@@ -32,6 +32,8 @@ from .serializers import (
     ReviewSerializer,
 )
 from auth_api.serializers import UserSerializer
+# multiperserar
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 User = get_user_model()
@@ -255,6 +257,7 @@ class ProductImageView(viewsets.ModelViewSet):
     queryset = ProductImage.objects.all()
     serializer_class = ProductImageSerializer
     authentication_classes = [JWTAuthentication]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
@@ -354,6 +357,7 @@ class ReviewView(viewsets.ModelViewSet):
 class ReviewImageView(viewsets.ModelViewSet):
     queryset = ReviewImage.objects.all()
     serializer_class = ReviewImageSerializer
+    parser_classes = [MultiPartParser, FormParser]
 
 
 class OrderView(viewsets.ModelViewSet):

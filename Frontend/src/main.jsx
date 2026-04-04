@@ -12,7 +12,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { ThemeProvider } from "./components/ThemeProvider";
 
 const ClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-console.log("Google Client ID:", ClientId);
+// console.log("Google Client ID:", ClientId);
 
 createRoot(document.getElementById('root')).render(
   <Provider store={mystore}>

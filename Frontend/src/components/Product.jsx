@@ -10,7 +10,7 @@ const Product = ({ product }) => {
       ? product.images[0].image
       : "/placeholder.png";
 
-    console.log('imageUrl:', imageUrl);
+    // console.log('imageUrl:', imageUrl);
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-gray-800 bg-gray-900 transition duration-200 hover:border-orange-400">

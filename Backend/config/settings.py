@@ -184,6 +184,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # MEDIA_URL = 'media/'
 # MEDIA_ROOT = BASE_DIR / 'mediafiles'
 
+# coudinary image url 
+MEDIA_URL = 'https://res.cloudinary.com/dkorqoeca/'
+
 
 
 

@@ -67,8 +67,8 @@ class CartItemSerializer(serializers.ModelSerializer):
             return None
 
         image_url = first_image.image.url
-        if request:
-            return request.build_absolute_uri(image_url)
+        # if request:
+        #     return request.build_absolute_uri(image_url)
         return image_url
 
 

@@ -251,12 +251,12 @@ DJOSER = {
     "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy", # ADDed
 
     # -------- Activation --------
-    'SEND_ACTIVATION_EMAIL': True,
+    'SEND_ACTIVATION_EMAIL': False,
     'ACTIVATION_URL': 'activate/{uid}/{token}',
 
 
     # -------- Email Notifications --------
-    'SEND_CONFIRMATION_EMAIL': True,
+    'SEND_CONFIRMATION_EMAIL': False,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
 
     # -------- Password Reset --------

@@ -30,13 +30,8 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 #     "http://localhost:5173",
 
 # ]
-CORS_ALLOWED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
-    if origin.strip()
-]
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(',')
 
-CORS_ALLOW_CREDENTIALS = True
 
 
 # CSRF_TRUSTED_ORIGINS = [
@@ -248,15 +243,15 @@ DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
     'TOKEN_MODEL': None,  # Using JWT
-    "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy", # ADDed
+    # "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy", # ADDed
 
     # -------- Activation --------
-    'SEND_ACTIVATION_EMAIL': False,
+    'SEND_ACTIVATION_EMAIL': True,
     'ACTIVATION_URL': 'activate/{uid}/{token}',
 
 
     # -------- Email Notifications --------
-    'SEND_CONFIRMATION_EMAIL': False,
+    'SEND_CONFIRMATION_EMAIL': True,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
 
     # -------- Password Reset --------

@@ -558,9 +558,9 @@ class OrderView(viewsets.ModelViewSet):
             "total_amount": float(order.totalPrice),
             "currency": "BDT",
             "tran_id": str(order.id),
-            "success_url": f"http://127.0.0.1:8000/api/orders/{order.id}/ssl_success/",
-            "fail_url": f"http://127.0.0.1:8000/api/orders/{order.id}/ssl_fail/",
-            "cancel_url": f"http://127.0.0.1:8000/api/orders/{order.id}/ssl_cancel/",
+            "success_url": f"{settings.Backend_URL}/api/orders/{order.id}/ssl_success/",  # f"http://127.0.0.1:8000/api/orders/{order.id}/ssl_success/",
+            "fail_url": f"{settings.Backend_URL}/api/orders/{order.id}/ssl_fail/",
+            "cancel_url": f"{settings.Backend_URL}/api/orders/{order.id}/ssl_cancel/",
             "cus_name": request.user.name,
             "cus_email": request.user.email,
             "cus_add1": order.shippingaddress.address,
@@ -599,7 +599,7 @@ class OrderView(viewsets.ModelViewSet):
         except Exception as exc:
             print("SSL success error:", str(exc))
 
-        return redirect(f"http://localhost:5173/order/{pk}?status=success")
+        return redirect(f"{settings.FRONTEND_URL}/order/{pk}?status=success")
 
     @action(
         detail=True,
@@ -608,7 +608,7 @@ class OrderView(viewsets.ModelViewSet):
         permission_classes=[],
     )
     def ssl_fail(self, request, pk=None):
-        return redirect(f"http://localhost:5173/order/{pk}?status=fail")
+        return redirect(f"{settings.FRONTEND_URL}/order/{pk}?status=fail")
 
     @action(
         detail=True,
@@ -617,4 +617,4 @@ class OrderView(viewsets.ModelViewSet):
         permission_classes=[],
     )
     def ssl_cancel(self, request, pk=None):
-        return redirect(f"http://localhost:5173/order/{pk}?status=cancel")
+        return redirect(f"{settings.FRONTEND_URL}/order/{pk}?status=cancel")

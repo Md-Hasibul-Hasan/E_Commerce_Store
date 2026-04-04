@@ -132,9 +132,9 @@ DATABASES = {
         "HOST": os.getenv('DB_HOST'),
         "PORT": os.getenv('DB_PORT'),
 
-        # "OPTIONS": {
-        #     "options": "-c search_path=newschema"
-        # }
+        "OPTIONS": {
+            "options": "-c search_path=newschema"
+        }
     }
 }
 
@@ -297,6 +297,7 @@ EMAIL_HOST_USER =  os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
+FRONTEND_URL = os.getenv('FRONTEND_URL')
 
 
 # SSLCOMMERZ_STORE_ID = 'teamr600c004f8da4d'

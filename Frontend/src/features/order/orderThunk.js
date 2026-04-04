@@ -128,7 +128,7 @@ export const createOrderAsync = createAsyncThunk(
       return data;
     } catch (error) {
       return rejectWithValue(
-        'imhere',error.response?.data?.detail || error.message
+        'getting error here' + error.response?.data?.detail || error.message
       );
     }
   }

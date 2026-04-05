@@ -459,7 +459,7 @@ class OrderView(viewsets.ModelViewSet):
                     order=order,
                     name=product.name,
                     qty=quantity,
-                    price=item["price"],
+                    price=product.price,
                     image=image_url,
                 )
 

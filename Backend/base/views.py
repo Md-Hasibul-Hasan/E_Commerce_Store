@@ -14,6 +14,8 @@ from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from decimal import Decimal
+
 
 from .models import *
 from .emails import (
@@ -465,6 +467,119 @@ class OrderView(viewsets.ModelViewSet):
                 product.save()
 
             transaction.on_commit(lambda: send_order_placed_email(order))
+
+
+    # def perform_create(self, serializer):
+    #     data = self.request.data
+    #     user = self.request.user
+    #     order_items = data.get("orderItems", [])
+
+    #     if not order_items:
+    #         raise ValidationError({"detail": "No order items"})
+
+    #     # 🔹 Validate shipping
+    #     shipping_address = data.get("shippingAddress") or {}
+    #     required_shipping_fields = ["address", "city", "postalCode", "country"]
+
+    #     missing_fields = [
+    #         field for field in required_shipping_fields if not shipping_address.get(field)
+    #     ]
+
+    #     if missing_fields:
+    #         raise ValidationError(
+    #             {"detail": f"Missing shipping fields: {', '.join(missing_fields)}"}
+    #         )
+
+    #     validated_items = []
+    #     items_price = Decimal("0.00")
+
+    #     with transaction.atomic():
+
+    #         # 🔒 Validate & lock products
+    #         for item in order_items:
+    #             product_id = item.get("id")
+    #             quantity = item.get("quantity")
+
+    #             try:
+    #                 quantity = int(quantity)
+    #             except (TypeError, ValueError):
+    #                 raise ValidationError({"detail": "Invalid quantity"})
+
+    #             if quantity < 1:
+    #                 raise ValidationError({"detail": "Quantity must be at least 1"})
+
+    #             try:
+    #                 product = Product.objects.select_for_update().get(id=product_id)
+    #             except Product.DoesNotExist:
+    #                 raise ValidationError({"detail": f"Product {product_id} not found"})
+
+    #             if quantity > product.countInStock:
+    #                 raise ValidationError(
+    #                     {"detail": f"Not enough stock for {product.name}"}
+    #                 )
+
+    #             # ✅ Use DB price (CRITICAL FIX)
+    #             item_total = product.price * quantity
+    #             items_price += item_total
+
+    #             validated_items.append((product, quantity))
+
+    #         # 🔹 Calculate pricing (BACKEND AUTHORITY)
+    #         shipping_price = Decimal(str(data.get("shippingPrice", 0)))
+    #         tax_price = (items_price * Decimal("0.05")).quantize(Decimal("0.01"))
+    #         total_price = (items_price + shipping_price + tax_price).quantize(Decimal("0.01"))
+
+    #         # 🔹 Optional strict validation (recommended)
+    #         frontend_total = Decimal(str(data.get("totalPrice", 0)))
+
+    #         if abs(frontend_total - total_price) > Decimal("0.50"):
+    #             raise ValidationError({"detail": "Total price mismatch. Please refresh cart."})
+
+    #         # ✅ Create Order
+    #         order = serializer.save(
+    #             user=user,
+    #             taxPrice=tax_price,
+    #             shippingPrice=shipping_price,
+    #             totalPrice=total_price,
+    #             expiresAt=now() + timedelta(minutes=10),
+    #         )
+
+    #         # ✅ Create Shipping Address
+    #         ShippingAddress.objects.create(
+    #             order=order,
+    #             address=shipping_address["address"],
+    #             city=shipping_address["city"],
+    #             postalCode=shipping_address["postalCode"],
+    #             country=shipping_address["country"],
+    #             shippingPrice=shipping_price,
+    #         )
+
+    #         # ✅ Create Order Items + update stock
+    #         for product, quantity in validated_items:
+    #             image_url = ""
+    #             if product.images.exists():
+    #                 image_url = self.request.build_absolute_uri(
+    #                     product.images.first().image.url
+    #                 )
+
+    #             OrderItem.objects.create(
+    #                 product=product,
+    #                 order=order,
+    #                 name=product.name,
+    #                 qty=quantity,
+    #                 price=product.price,  # ✅ FIXED
+    #                 image=image_url,
+    #             )
+
+    #             # 🔻 Deduct stock
+    #             product.countInStock -= quantity
+    #             product.save(update_fields=["countInStock"])
+
+    #         # 📧 Send email after commit
+    #         transaction.on_commit(lambda: send_order_placed_email(order))
+
+
+
 
     def retrieve(self, request, *args, **kwargs):
         order = self.get_object()

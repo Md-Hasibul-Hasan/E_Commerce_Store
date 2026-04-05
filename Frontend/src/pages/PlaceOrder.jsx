@@ -51,7 +51,10 @@ const PlaceOrder = () => {
   const placeOrderHandler = () => {
     dispatch(
       createOrderAsync({
-        orderItems: items,
+        orderItems: items.map(item => ({
+          id: item.id,
+          quantity: item.quantity
+        })),
         shippingAddress,
         paymentMethod,
         itemsPrice,
@@ -185,7 +188,7 @@ const PlaceOrder = () => {
 
             <div className="mt-6 space-y-3">
               <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#0d1118] px-4 py-3 text-sm">
-                <span className="text-gray-400">Items</span>
+                <span className="text-gray-400">Subtotal</span>
                 <span className="font-medium text-white">৳ {itemsPrice}</span>
               </div>
 

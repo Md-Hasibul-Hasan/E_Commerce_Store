@@ -126,10 +126,11 @@ export const createOrderAsync = createAsyncThunk(
       // 🔥 FIX END
 
       return data;
-    } catch (error) {
-      return rejectWithValue(
-        'getting error here' + error.response?.data?.detail || error.message
-      );
+    }
+    catch (error) {
+      console.log("ERROR FULL:", error.response);
+      console.log("ERROR DATA:", error.response?.data);
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );

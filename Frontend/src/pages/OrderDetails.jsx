@@ -93,8 +93,8 @@ const OrderDetails = () => {
     .filter(Boolean)
     .join(", ");
 
-  const itemsPrice = order.orderitems
-    ?.reduce((acc, item) => acc + item.price * item.qty, 0)
+  const itemsPrice = (order.orderitems
+    ?.reduce((acc, item) => acc + item.price * item.qty, 0) || 0)
     .toFixed(2);
 
   const statusBanner = isReturned

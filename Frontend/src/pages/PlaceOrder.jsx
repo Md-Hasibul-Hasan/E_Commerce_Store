@@ -54,10 +54,10 @@ const PlaceOrder = () => {
         orderItems: items,
         shippingAddress,
         paymentMethod,
-        itemsPrice,
-        shippingPrice,
-        taxPrice,
-        totalPrice,
+        itemsPrice: Number(itemsPrice),
+        shippingPrice: Number(shippingPrice),
+        taxPrice: Number(taxPrice),
+        totalPrice: Number(totalPrice),
       })
     );
   };

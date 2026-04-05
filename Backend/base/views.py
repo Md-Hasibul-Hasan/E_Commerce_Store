@@ -387,102 +387,111 @@ class OrderView(viewsets.ModelViewSet):
         return super().list(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        data = self.request.data
-        user = self.request.user
-        order_items = data.get("orderItems", [])
+        try:
+            data = self.request.data
+            user = self.request.user
+            order_items = data.get("orderItems", [])
 
-        if not order_items:
-            raise ValidationError({"detail": "No order items provided"})
+            if not order_items:
+                raise ValidationError({"detail": "No order items provided"})
 
-        # Validate orderItems is a list
-        if not isinstance(order_items, list):
-            raise ValidationError({"detail": "orderItems must be a list"})
+            # Validate orderItems is a list
+            if not isinstance(order_items, list):
+                raise ValidationError({"detail": "orderItems must be a list"})
 
-        shipping_address = data.get("shippingAddress") or {}
-        required_shipping_fields = ["address", "city", "postalCode", "country"]
-        missing_fields = [
-            field for field in required_shipping_fields if not shipping_address.get(field)
-        ]
-        if missing_fields:
-            raise ValidationError(
-                {"detail": f"Missing shipping fields: {', '.join(missing_fields)}"}
-            )
-
-        validated_items = []
-
-        with transaction.atomic():
-            for index, item in enumerate(order_items):
-                if not isinstance(item, dict):
-                    raise ValidationError({"detail": f"Item {index} is not a valid object"})
-
-                product_id = item.get("id")
-                if not product_id:
-                    raise ValidationError({"detail": f"Item {index}: Product ID is required"})
-
-                quantity = item.get("quantity")
-                price = item.get("price")
-
-                if price is None:
-                    raise ValidationError({"detail": f"Item {index}: Price is required"})
-
-                try:
-                    quantity = int(quantity)
-                except (TypeError, ValueError):
-                    raise ValidationError({"detail": f"Item {index}: Quantity must be a valid number"})
-
-                if quantity < 1:
-                    raise ValidationError({"detail": f"Item {index}: Quantity must be at least 1"})
-
-                try:
-                    product = Product.objects.select_for_update().get(id=product_id)
-                except Product.DoesNotExist:
-                    raise ValidationError({"detail": f"Item {index}: Product {product_id} was not found"})
-
-                if quantity > product.countInStock:
-                    raise ValidationError(
-                        {"detail": f"Item {index}: Only {product.countInStock} {product.name} in stock (requested {quantity})"}
-                    )
-
-                validated_items.append((item, product, quantity))
-
-            order = serializer.save(
-                user=user,
-                expiresAt=now() + timedelta(minutes=1),
-            )
-
-            ShippingAddress.objects.create(
-                order=order,
-                address=shipping_address["address"],
-                city=shipping_address["city"],
-                postalCode=shipping_address["postalCode"],
-                country=shipping_address["country"],
-                shippingPrice=data.get("shippingPrice", 0),
-            )
-
-            for item, product, quantity in validated_items:
-                image_url = ""
-                if product.images.exists():
-                    image_url = self.request.build_absolute_uri(
-                        product.images.first().image.url
-                    )
-
-                price = item.get("price")
-                if price is None:
-                    raise ValidationError({"detail": f"Price is required for {product.name}"})
-
-                OrderItem.objects.create(
-                    product=product,
-                    order=order,
-                    name=product.name,
-                    qty=quantity,
-                    price=price,
-                    image=image_url,
+            shipping_address = data.get("shippingAddress") or {}
+            required_shipping_fields = ["address", "city", "postalCode", "country"]
+            missing_fields = [
+                field for field in required_shipping_fields if not shipping_address.get(field)
+            ]
+            if missing_fields:
+                raise ValidationError(
+                    {"detail": f"Missing shipping fields: {', '.join(missing_fields)}"}
                 )
 
-                product.countInStock -= quantity
-                product.save()
+            validated_items = []
 
-            transaction.on_commit(lambda: send_order_placed_email(order))
+            with transaction.atomic():
+                for index, item in enumerate(order_items):
+                    if not isinstance(item, dict):
+                        raise ValidationError({"detail": f"Item {index} is not a valid object"})
+
+                    product_id = item.get("id")
+                    if not product_id:
+                        raise ValidationError({"detail": f"Item {index}: Product ID is required"})
+
+                    quantity = item.get("quantity")
+                    price = item.get("price")
+
+                    if price is None:
+                        raise ValidationError({"detail": f"Item {index}: Price is required"})
+
+                    try:
+                        quantity = int(quantity)
+                    except (TypeError, ValueError):
+                        raise ValidationError({"detail": f"Item {index}: Quantity must be a valid number"})
+
+                    if quantity < 1:
+                        raise ValidationError({"detail": f"Item {index}: Quantity must be at least 1"})
+
+                    try:
+                        product = Product.objects.select_for_update().get(id=product_id)
+                    except Product.DoesNotExist:
+                        raise ValidationError({"detail": f"Item {index}: Product {product_id} was not found"})
+
+                    if quantity > product.countInStock:
+                        raise ValidationError(
+                            {"detail": f"Item {index}: Only {product.countInStock} {product.name} in stock (requested {quantity})"}
+                        )
+
+                    validated_items.append((item, product, quantity))
+
+                order = serializer.save(
+                    user=user,
+                    paymentMethod=data.get("paymentMethod"),
+                    taxPrice=data.get("taxPrice", 0),
+                    shippingPrice=data.get("shippingPrice", 0),
+                    totalPrice=data.get("totalPrice", 0),
+                    expiresAt=now() + timedelta(minutes=1),
+                )
+
+                ShippingAddress.objects.create(
+                    order=order,
+                    address=shipping_address["address"],
+                    city=shipping_address["city"],
+                    postalCode=shipping_address["postalCode"],
+                    country=shipping_address["country"],
+                    shippingPrice=data.get("shippingPrice", 0),
+                )
+
+                for item, product, quantity in validated_items:
+                    image_url = ""
+                    if product.images.exists():
+                        image_url = self.request.build_absolute_uri(
+                            product.images.first().image.url
+                        )
+
+                    price = item.get("price")
+                    if price is None:
+                        raise ValidationError({"detail": f"Price is required for {product.name}"})
+
+                    OrderItem.objects.create(
+                        product=product,
+                        order=order,
+                        name=product.name,
+                        qty=quantity,
+                        price=price,
+                        image=image_url,
+                    )
+
+                    product.countInStock -= quantity
+                    product.save()
+
+                transaction.on_commit(lambda: send_order_placed_email(order))
+        except ValidationError:
+            raise
+        except Exception as e:
+            raise ValidationError({"detail": f"Error creating order: {str(e)}"})
 
     def retrieve(self, request, *args, **kwargs):
         order = self.get_object()

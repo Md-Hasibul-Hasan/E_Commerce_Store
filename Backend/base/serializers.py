@@ -132,25 +132,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = [
-            "id",
-            "user",
-            "paymentMethod",
-            "taxPrice",
-            "shippingPrice",
-            "totalPrice",
-            "isPaid",
-            "paidAt",
-            "isDelivered",
-            "deliveredAt",
-            "status",
-            "expiresAt",
-            "createdAt",
-            "updatedAt",
-            "orderitems",
-            "shippingAddress",
-        ]
-        read_only_fields = ["id", "paidAt", "deliveredAt", "isPaid", "isDelivered", "createdAt", "updatedAt", "status", "expiresAt"]
+        fields = "__all__"
 
     def get_shippingAddress(self, obj):
         shipping_address = getattr(obj, "shippingaddress", None)

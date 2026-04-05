@@ -127,12 +127,12 @@ export const createOrderAsync = createAsyncThunk(
 
       return data;
     } catch (error) {
-      const errorMessage = error.response?.data?.detail || error.response?.data || error.message;
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        'getting error here' + error.response?.data?.detail || error.message
+      );
     }
   }
 );
-
 
 // ✅ ORDER DETAILS
 export const getOrderDetailsAsync = createAsyncThunk(

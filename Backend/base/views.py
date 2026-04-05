@@ -392,7 +392,11 @@ class OrderView(viewsets.ModelViewSet):
         order_items = data.get("orderItems", [])
 
         if not order_items:
-            raise ValidationError({"detail": "No order items"})
+            raise ValidationError({"detail": "No order items provided"})
+
+        # Validate orderItems is a list
+        if not isinstance(order_items, list):
+            raise ValidationError({"detail": "orderItems must be a list"})
 
         shipping_address = data.get("shippingAddress") or {}
         required_shipping_fields = ["address", "city", "postalCode", "country"]
@@ -407,26 +411,36 @@ class OrderView(viewsets.ModelViewSet):
         validated_items = []
 
         with transaction.atomic():
-            for item in order_items:
+            for index, item in enumerate(order_items):
+                if not isinstance(item, dict):
+                    raise ValidationError({"detail": f"Item {index} is not a valid object"})
+
                 product_id = item.get("id")
+                if not product_id:
+                    raise ValidationError({"detail": f"Item {index}: Product ID is required"})
+
                 quantity = item.get("quantity")
+                price = item.get("price")
+
+                if price is None:
+                    raise ValidationError({"detail": f"Item {index}: Price is required"})
 
                 try:
                     quantity = int(quantity)
                 except (TypeError, ValueError):
-                    raise ValidationError({"detail": "Item quantity must be a valid number"})
+                    raise ValidationError({"detail": f"Item {index}: Quantity must be a valid number"})
 
                 if quantity < 1:
-                    raise ValidationError({"detail": "Item quantity must be at least 1"})
+                    raise ValidationError({"detail": f"Item {index}: Quantity must be at least 1"})
 
                 try:
                     product = Product.objects.select_for_update().get(id=product_id)
                 except Product.DoesNotExist:
-                    raise ValidationError({"detail": f"Product {product_id} was not found"})
+                    raise ValidationError({"detail": f"Item {index}: Product {product_id} was not found"})
 
                 if quantity > product.countInStock:
                     raise ValidationError(
-                        {"detail": f"Requested quantity is not available for {product.name}"}
+                        {"detail": f"Item {index}: Only {product.countInStock} {product.name} in stock (requested {quantity})"}
                     )
 
                 validated_items.append((item, product, quantity))
@@ -452,12 +466,16 @@ class OrderView(viewsets.ModelViewSet):
                         product.images.first().image.url
                     )
 
+                price = item.get("price")
+                if price is None:
+                    raise ValidationError({"detail": f"Price is required for {product.name}"})
+
                 OrderItem.objects.create(
                     product=product,
                     order=order,
                     name=product.name,
                     qty=quantity,
-                    price=item["price"],
+                    price=price,
                     image=image_url,
                 )
 

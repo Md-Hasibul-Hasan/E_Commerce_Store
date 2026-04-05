@@ -11,8 +11,8 @@ const inputClasses =
   "w-full rounded-2xl border border-white/10 bg-[#0d1118] px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-orange-400/40 focus:outline-none";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("admin@gmail.com");
+  const [password, setPassword] = useState("admin");
   const [showPass, setShowPass] = useState(false);
   const [remember, setRemember] = useState(false);
 
@@ -179,10 +179,22 @@ const Login = () => {
             <div className="h-px flex-1 bg-white/10" />
           </div>
 
-          <button
+          {/* <button
             onClick={() => handleGoogleLogin()}
             className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:border-white/20 hover:bg-white/10"
           >
+            Continue with Google
+          </button> */}
+
+          <button
+            onClick={() => handleGoogleLogin()}
+            className="w-full flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
+          >
+            <img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              alt="Google"
+              className="h-5 w-5"
+            />
             Continue with Google
           </button>
 

@@ -17,7 +17,7 @@ class Product(models.Model):
 
     description = models.TextField(blank=True, null=True  )
 
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=17, decimal_places=2)
     countInStock = models.IntegerField(default=0)
 
     rating = models.FloatField(default=0)
@@ -123,7 +123,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='orderitems')
     name = models.CharField(max_length=200, null=True)
     qty = models.IntegerField(null=True)
-    price = models.DecimalField(max_digits=7, decimal_places=2, null=True)
+    price = models.DecimalField(max_digits=17, decimal_places=2, null=True)
     # image = models.CharField(max_length=200, null=True, blank=True)
     image = CloudinaryField('orderitem_images',null=True,blank=True)
 

@@ -51,10 +51,7 @@ const PlaceOrder = () => {
   const placeOrderHandler = () => {
     dispatch(
       createOrderAsync({
-        orderItems: items.map(item => ({
-          id: item.id,
-          quantity: item.quantity
-        })),
+        orderItems: items,
         shippingAddress,
         paymentMethod,
         itemsPrice,

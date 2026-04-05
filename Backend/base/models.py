@@ -59,9 +59,9 @@ STATUS_CHOICES = [
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     paymentMethod = models.CharField(max_length=200, null=True)
-    taxPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True)
-    shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True)
-    totalPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True)
+    taxPrice = models.DecimalField(max_digits=17, decimal_places=2, null=True)
+    shippingPrice = models.DecimalField(max_digits=17, decimal_places=2, null=True)
+    totalPrice = models.DecimalField(max_digits=17, decimal_places=2, null=True)
     isPaid = models.BooleanField(default=False)
     paidAt = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     isDelivered = models.BooleanField(default=False)

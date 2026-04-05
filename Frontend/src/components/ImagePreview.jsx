@@ -27,7 +27,7 @@ const ImagePreview = ({ images, current, setCurrent, onClose }) => {
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 text-orange-400 transition hover:bg-white/20 sm:h-11 sm:w-11 sm:right-6 sm:top-6"
+          className="absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-orange-400 bg-white/10 text-orange-400 transition hover:bg-white/20 sm:h-11 sm:w-11 sm:right-6 sm:top-6"
         >
           ✕
         </button>
@@ -36,7 +36,7 @@ const ImagePreview = ({ images, current, setCurrent, onClose }) => {
         {images.length > 1 && (
           <button
             onClick={prev}
-            className="absolute left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-white/10 text-xl text-orange-400 transition hover:bg-white/20 sm:left-6 sm:h-11 sm:w-11 sm:text-2xl"
+            className="absolute left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-orange-400 bg-gray-600 text-xl text-orange-400 transition hover:bg-white/20 sm:left-6 sm:h-11 sm:w-11 sm:text-2xl"
           >
             ‹
           </button>
@@ -69,7 +69,7 @@ const ImagePreview = ({ images, current, setCurrent, onClose }) => {
         {images.length > 1 && (
           <button
             onClick={next}
-            className="absolute right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-white/10 text-xl text-orange-400 transition hover:bg-white/20 sm:right-6 sm:h-11 sm:w-11 sm:text-2xl"
+            className="absolute right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-orange-400 bg-gray-600 text-xl text-orange-400 transition hover:bg-white/20 sm:right-6 sm:h-11 sm:w-11 sm:text-2xl"
           >
             ›
           </button>

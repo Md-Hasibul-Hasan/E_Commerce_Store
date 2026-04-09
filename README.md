@@ -1,58 +1,56 @@
-# 🛒 E-Commerce Full Stack App
+# E-Commerce Full-Stack App
 
-**Django + React + Render + Vercel + Cloudinary**
+Production-ready store built with **Django REST Framework + React (Vite)**. Hosted on **Render** (API + PostgreSQL) and **Vercel** (frontend) with **Cloudinary** for media, **PayPal** and **SSLCommerz** for payments.
 
-A production-ready full-stack E-Commerce platform with authentication, cart, orders, payments, and image upload.
-
----
-
-# 🚀 Live Architecture
-
-```
-Frontend (Vercel)
-        ↓
-Django API (Render)
-        ↓
-PostgreSQL (Render)
-        ↓
-Cloudinary (Images)
-```
+Live demo: https://e-commerce-store-sigma-sable.vercel.app/
 
 ---
 
-# 📁 Project Structure
+## Highlights
+- Email-first authentication (custom user) with JWT via Djoser
+- Product catalog with search, filters, sorting, ratings, and image uploads
+- Cart, orders, stock control, and automatic cancellation of stale orders
+- Payments: PayPal and SSLCommerz
+- Optimized static handling with WhiteNoise; deployment-ready build commands
 
+---
+
+## Architecture
 ```
-E_Commerce_Store/
-├── Backend/        # Django backend
-│   ├── config/
-│   ├── auth_api/
-│   ├── base/
-│   └── manage.py
-│
-├── frontend/       # React (Vite)
+Vercel (React UI)
+   ->
+Render Web Service (Django API)
+   ->
+Render PostgreSQL
+   ->
+Cloudinary (media storage)
 ```
 
 ---
 
-# ⚙️ Backend Setup (Django)
+## Project Structure
+```
+E-Commerz/
+|- Backend/    # Django project (config/, auth_api/, base/, manage.py)
+|- frontend/   # React (Vite) app
+```
 
-## 🔹 Install Dependencies
+---
 
+## Backend Setup (Django)
+### Prerequisites
+- Python 3.12+
+- PostgreSQL instance (local or hosted)
+
+### Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-## 🔹 Environment Variables (.env)
-
-Create `.env` inside **Backend/**:
-
+### Environment (Backend/.env)
 ```env
 SECRET_KEY=your_secret_key
 DEBUG=False
-
 ALLOWED_HOSTS=e-commerce-store.onrender.com
 
 DB_NAME=...
@@ -79,94 +77,58 @@ SSLCOMMERZ_STORE_ID=...
 SSLCOMMERZ_STORE_PASS=...
 ```
 
----
-
-# 🗄 Database (Render PostgreSQL)
-
-1. Go to **Render → New → PostgreSQL**
-2. Copy credentials
-3. Add to `.env`
-
----
-
-## 🔹 Django Config
-
+### Database configuration
 ```python
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv('DB_NAME'),
-        "USER": os.getenv('DB_USER'),
-        "PASSWORD": os.getenv('DB_PASSWORD'),
-        "HOST": os.getenv('DB_HOST'),
-        "PORT": os.getenv('DB_PORT'),
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
     }
 }
 ```
 
----
-
-# ☁️ Cloudinary (Image Upload)
-
-## 🔹 Install
-
-```bash
-pip install cloudinary django-cloudinary-storage
-```
-
----
-
-## 🔹 Settings
-
+### Cloudinary media
 ```python
-INSTALLED_APPS += [
-    'cloudinary',
-    'cloudinary_storage',
-]
+INSTALLED_APPS += ["cloudinary", "cloudinary_storage"]
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUD_NAME'),
-    'API_KEY': os.getenv('API_KEY'),
-    'API_SECRET': os.getenv('API_SECRET'),
+    "CLOUD_NAME": os.getenv("CLOUD_NAME"),
+    "API_KEY": os.getenv("API_KEY"),
+    "API_SECRET": os.getenv("API_SECRET"),
 }
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 ```
 
----
-
-## ⚠️ Important
-
-❌ Remove local media usage:
-
+### Static files (WhiteNoise)
 ```python
-# DO NOT use in production
-MEDIA_ROOT
-MEDIA_URL
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    ...
+]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+```
+
+### Run locally
+```bash
+python Backend/manage.py migrate
+python Backend/manage.py createsuperuser
+python Backend/manage.py runserver
 ```
 
 ---
 
-# 🔐 Authentication (JWT + Custom User)
-
-* Custom user model (`auth_api.User`)
-* Login uses **email**
-
-```python
-DJOSER = {
-    'LOGIN_FIELD': 'email',
-}
-```
-
----
-
-## 🔹 Login API
-
-```
+## Auth (Email + JWT)
+- Custom user model: `auth_api.User`
+- Djoser with `LOGIN_FIELD = "email"`
+- Obtain token:
+```http
 POST /auth/jwt/create/
-```
-
-```json
 {
   "email": "admin@gmail.com",
   "password": "admin123"
@@ -175,182 +137,71 @@ POST /auth/jwt/create/
 
 ---
 
-# 🛍 Features
-
-## ✔ Product System
-
-* Create / update products
-* Filter / search / sort
-* Top products
-
-## ✔ Cart System
-
-* Add / update / remove items
-* Sync cart
-
-## ✔ Order System
-
-* Place order
-* Stock management
-* Auto cancel expired orders
-
-## ✔ Payment
-
-* PayPal
-* SSLCommerz
-
-## ✔ Reviews
-
-* Only after purchase
-* Rating + image upload
-
----
-
-# 🎨 Static Files Fix (Admin UI)
-
-```python
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-]
+## Frontend Setup (React + Vite)
+### Environment (frontend/.env)
+```env
+VITE_API_URL=https://your-backend.onrender.com
 ```
 
-```python
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+### Example usage
+```js
+const API = import.meta.env.VITE_API_URL;
+axios.post(`${API}/api/orders/`, data, {
+  headers: { Authorization: `Bearer ${token}` },
+});
 ```
 
----
-
-# 🚀 Backend Deployment (Render)
-
-## 🔹 Service Settings
-
-* Type: **Web Service**
-* Root Directory: *(leave empty OR project root)*
-
----
-
-## 🔹 Build Command ✅
-
+### Run locally
 ```bash
-pip install -r requirements.txt && python Backend/manage.py migrate && python Backend/manage.py collectstatic --noinput
+cd frontend
+npm install
+npm run dev
 ```
 
 ---
 
-## 🔹 Start Command ✅
-
+## Deployment
+### Backend on Render
+- Service type: Web Service
+- Build command:
+```bash
+pip install -r requirements.txt \
+  && python Backend/manage.py migrate \
+  && python Backend/manage.py shell -c "from auth_api.models import User; User.objects.filter(email='admin@gmail.com').exists() or User.objects.create_superuser(name='Admin', email='admin@gmail.com', password='admin')" \
+  && python Backend/manage.py collectstatic --noinput
+```
+- Start command:
 ```bash
 gunicorn --chdir Backend config.wsgi:application
 ```
 
----
-
-# 🌐 Frontend Setup (React + Vite)
-
-## 🔹 Environment
-
-```env
-VITE_API_URL=https://your-backend.onrender.com
-```
+### Frontend on Vercel
+- Root directory: `frontend`
+- Env: `VITE_API_URL=https://your-backend.onrender.com`
 
 ---
 
-## 🔹 API Usage
-
-```js
-const API = import.meta.env.VITE_API_URL;
-
-axios.post(`${API}/api/orders/`, data);
-```
-
----
-
-## 🔹 Auth Header
-
-```js
-Authorization: `Bearer ${token}`
-```
+## Deployment Checklist
+- [x] Backend deployed (Render)
+- [x] PostgreSQL connected
+- [x] Cloudinary configured
+- [x] Frontend deployed (Vercel)
+- [x] JWT auth verified
+- [x] Orders and payments tested
 
 ---
 
-# 🚀 Frontend Deployment (Vercel)
-
-1. Import repo
-2. Set:
-
-```
-Root Directory = frontend
-```
-
-3. Add ENV:
-
-```env
-VITE_API_URL=https://your-backend.onrender.com
-```
-
-4. Deploy
+## Maintenance Notes
+- Redeploy after changing environment variables.
+- Use Cloudinary for all media; avoid local `MEDIA_ROOT`/`MEDIA_URL` in production.
+- Use email (not username) for login everywhere.
 
 ---
 
-# 🔐 CORS & CSRF (IMPORTANT)
+## Author
+Md Hasibul Hasan
 
-```env
-CORS_ALLOWED_ORIGINS=https://your-vercel-app.vercel.app
-CSRF_TRUSTED_ORIGINS=https://your-vercel-app.vercel.app
-```
-
-⚠️ No trailing `/`
-
----
-
-# 🔥 Final Architecture
-
-```
-Frontend (Vercel)
-        ↓
-Backend API (Render)
-        ↓
-PostgreSQL (Render)
-        ↓
-Cloudinary (Images)
-```
-
----
-
-# ✅ Deployment Checklist
-
-* [x] Backend deployed (Render)
-* [x] PostgreSQL connected
-* [x] Cloudinary configured
-* [x] Frontend deployed (Vercel)
-* [x] JWT authentication working
-* [x] Orders + payments working
-
----
-
-# ⚠️ Notes
-
-* Use **email instead of username**
-* Local media ❌ not supported on Render
-* Always redeploy after changing ENV
-* Always use Cloudinary for images
-
----
-
-# 👨‍💻 Author
-
-**Md Hasibul Hasan**
-
----
-
-# ⭐ Optional Improvements
-
-* Add screenshots
-* Add API documentation
-* Add Swagger / OpenAPI
-* Add CI/CD
-
----
-
-🚀 Your E-Commerce app is now **fully production-ready**
+## Future Enhancements
+- Add screenshots and visual walkthrough
+- Publish Swagger/OpenAPI docs
+- Add CI/CD pipeline
